@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="GBK"?>
+<!-- 指定Struts 2配置文件的DTD信息 -->
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<!-- Struts 2配置文件的根元素 -->
+<struts>
+	<!-- 配置了系列常量 -->
+	<constant name="struts.objectFactory" value="spring" />
+	<constant name="struts.i18n.encoding" value="GBK"/>
+	
+	<constant name="struts.enable.DynamicMethodInvocation" value="false"/>
+	<constant name="struts.i18n.encoding" value="GBK"/>
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+	<!-- <constant name="struts.devMode" value="true"/>	 怎么处理-->
+	<constant name="struts.devMode" value="false" />
+	
+	<constant name="struts.action.extension" value="action"></constant>
+	
+	
+	
+	<package name="action" namespace="/" extends="struts-default">
+		
+			<interceptors>
+			<!-- 配置普通员工角色的权限检查拦截器 -->
+			<interceptor name="cusAuth"	class=
+			"action.authority.CustomerAuthorityInterceptor"/>
+			<!-- 配置经理角色的权限检查拦截器 -->
+			<interceptor name="adminAuth"	class=
+			"action.authority.AdminAuthorityInterceptor"/>
+			<!-- 配置普通员工的默认的拦截器栈 -->
+			<interceptor-stack name="cusStack">
+				<interceptor-ref name="defaultStack"/>
+				<interceptor-ref name="cusAuth"/>
+			</interceptor-stack>
+			<!-- 配置经理的默认的拦截器栈 -->
+			<interceptor-stack name="adminStack">
+				<interceptor-ref name="defaultStack"/>
+				<interceptor-ref name="adminAuth"/>
+			</interceptor-stack>
+		</interceptors>
+
+		<!-- 定义全局Result映射 -->
+		<global-results>
+			<!-- 定义sql、root两个异常对应的视图页 -->
+			<result name="business">/WEB-INF/content/error.jsp</result> 
+			<result name="root">/WEB-INF/content/error.jsp</result> 
+			<!-- 定义login逻辑视图对应的视图资源 -->
+			<result name="login">/WEB-INF/content/login.jsp</result>
+		</global-results>
+
+		<!-- 定义全局异常映射 -->
+		<global-exception-mappings>
+			<!-- 当Action中遇到HrException异常时，
+				系统将转入name为business的结果中 -->
+			<exception-mapping 
+				exception="exception.HrException"
+				result="business"/>
+			<!-- 当Action中遇到Exception异常时，
+				系统将转入name为root的结果中 -->
+			<exception-mapping exception="java.lang.Exception" 
+				result="root"/>
+		</global-exception-mappings>
+
+<!--============================下面是顾客角色的Action========================-->
+			
+			
+		
+		<!-- collection -->
+		<action name="addCollection" class="action.CollectionAction"
+			method="add">
+			<!-- 添加图书成功，列出所有图书 -->
+			<result type="chain">listCollections</result>
+			<!-- 添加图书失败，跳转到添加图书的表单页 -->
+			<result name="error">/WEB-INF/content/error.jsp</result>
+		</action>
+		<action name="listCollections" class="action.CollectionAction"
+			method="list">
+			<result>/WEB-INF/content/listCollections.jsp</result>
+		</action>
+		<action name="deleteCollection" class="action.CollectionAction"
+			method="delete">
+			<result type="chain">listCollections</result>
+		</action>	
+		
+		<!-- comment -->
+		<action name="addComment" class="action.CommentAction"
+			method="add">
+			<param name="savePath">/images</param>
+			<!-- 添加图书成功，列出所有图书 -->
+			<result type="chain">listComments</result>
+			<!-- 添加图书失败，跳转到添加图书的表单页 -->
+			<result name="error">/WEB-INF/content/error.jsp</result>
+		</action>
+		<action name="listComments" class="action.CommentAction"
+			method="list">
+			<result>/WEB-INF/content/listComments.jsp</result>
+		</action>
+		<action name="deleteComment" class="action.CommentAction"
+			method="delete">
+			<result type="chain">listComments</result>
+		</action>
+		<action name="orderEvaluate" class="action.OrderAction"
+			method="evaluate">
+			<result>/WEB-INF/content/orderEvaluate.jsp</result>
+		</action>	
+		
+		<!-- order -->
+		<action name="addOrder" class="action.OrderAction"
+			method="add">
+			<!-- 添加图书成功，列出所有图书 -->
+			<result type="chain">listOrders</result>
+			<!-- 添加图书失败，跳转到添加图书的表单页 -->
+			<result name="error">/WEB-INF/content/error.jsp</result>
+		</action>
+		<action name="listOrders" class="action.OrderAction"
+			method="list">
+			<result>/WEB-INF/content/listOrders.jsp</result>
+		</action>
+		<action name="deleteOrder" class="action.OrderAction"
+			method="delete">
+			<result type="chain">listOrders</result>
+		</action>
+		
+		<!-- shoppingCar -->
+		<action name="addShoppingCar" class="action.ShoppingCarAction"
+			method="add">
+			<!-- 添加图书成功，列出所有图书 -->
+			<result type="chain">listShoppingCars</result>
+			<!-- 添加图书失败，跳转到添加图书的表单页 -->
+			<result name="error">/WEB-INF/content/error.jsp</result>
+		</action>
+		<action name="listShoppingCars" class="action.ShoppingCarAction"
+			method="list">
+			<result>/WEB-INF/content/listShoppingCars.jsp</result>
+		</action>
+		<action name="deleteShoppingCar" class="action.ShoppingCarAction"
+			method="delete">
+			<result type="chain">listShoppingCars</result>
+		</action>
+		<action name="updateShoppingCar" class="action.ShoppingCarAction"
+			method="update">
+			<result type="chain">listShoppingCars</result>
+		</action>
+		<action name="order" class="action.ShoppingCarAction"
+			method="one">
+			<result>/WEB-INF/content/OrderComfirm.jsp</result>
+		</action>
+	
+	
+
+		<!-- 定义处理登出请求的Action -->
+		<action name="cusLogin" class="action.CustomerLoginAction">
+			<result name="input">/WEB-INF/content/login.jsp</result>
+			<result name="cus">/WEB-INF/content/index.jsp</result>
+			<result name="error">/WEB-INF/content/login.jsp</result>
+		</action>
+		<action name="register" class="action.RegisterAction">
+			<result name="input">/WEB-INF/content/register.jsp</result>
+			<result >/WEB-INF/content/login.jsp</result>
+			<result name="error">/WEB-INF/content/register.jsp</result>
+		</action>
+		<action name="loginout" class="action.LogoutAction">
+			<result name="error">/WEB-INF/content/index.jsp</result>
+			<result >/WEB-INF/content/login.jsp</result>
+		</action>
+		<action name="resetpassword" class="action.CustomerResetPasswordAction">
+			<result name="input">/WEB-INF/content/changepassword.jsp</result>
+			<result >/WEB-INF/content/login.jsp</result>
+			<result name="error">/WEB-INF/content/changepassword.jsp</result>
+		</action>
+		
+		
+		
+	
+
+<!--============================下面是管理角色的Action========================-->
+		<action name="adminLogin" class="action.AdminLoginAction">
+			<result name="input">/WEB-INF/content/adminlogin.jsp</result>
+			<result name="admin">/WEB-INF/content/adminindex.jsp</result>
+			<result name="error">/WEB-INF/content/adminlogin.jsp</result>
+		</action>
+		
+	    <action name="fruitadd" class="action.FruitAddAction">
+			<interceptor-ref name="fileUpload">		
+				<param name="allowedTypes">image/png
+					,image/gif,image/jpeg</param>
+				<param name="maximumSize">2000</param> 
+			</interceptor-ref> 	
+			<interceptor-ref name="defaultStack"/>
+			<param name="savePath">/uploadFiles</param>	
+			<result type="chain">listFruits</result>
+			<result name="input">/WEB-INF/content/productedit.jsp</result>
+			<result name="error">/WEB-INF/content/productedit.jsp</result>
+		</action>
+		
+		<action name="logout" class="action.AdminLoginAction">
+		
+			<result name="error">/WEB-INF/content/adminindex.jsp</result>
+			<result >/WEB-INF/content/adminlogin.jsp</result>
+		</action>
+		<action name="fruitdelete" class="action.FruitDeleteAction">
+			<result type="chain">listFruits</result>
+		</action>	
+		<action name="listFruits" class="action.FruitSearchAction"
+			method="list">
+			<result>/WEB-INF/content/listBooks.jsp</result>
+		</action>
+			<action name="fruitupdate" class="action.FruitUpdateAction">
+			<result type="chain">listFruits</result>
+		    </action>
+		 <action name="fruitupdatepicture" class="action.FruitPictureUpdateAction">
+			<interceptor-ref name="fileUpload">		
+				<param name="allowedTypes">image/png
+					,image/gif,image/jpeg</param>
+				<param name="maximumSize">2000</param> 
+			</interceptor-ref> 	
+			<interceptor-ref name="defaultStack"/>
+			<param name="savePath">/uploadFiles</param>	
+			<result type="chain">listFruits</result>
+		
+		</action>
+		<action name="liststockandsales" class="action.StockAndSaleCountActionAction"
+			method="list">
+			<result>/WEB-INF/content/stockandsaleview.jsp</result>
+		</action>
+		
+		<action name="stockadd" class="action.StockAddAction">
+			<result type="chain">liststockandsales</result>
+		</action>	
+	
+
+	
+		<!-- 定义处理用户请求的Action，该Action的class属性不是实际处理类
+			, 而是Spring容器中的Bean实例的ID -->
+		
+		<action name="*">
+			<result>/WEB-INF/content/{1}.jsp</result>
+		</action>
+	</package>
+</struts>

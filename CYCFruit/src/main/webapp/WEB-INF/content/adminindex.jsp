@@ -1,0 +1,1 @@
+<jsp:forward page="adminlogin.jsp"></jsp:forward>
